@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/presentation/book_list/book_list_page.dart';
+import 'package:myapp/presentation/login/login_page.dart';
+import 'package:myapp/presentation/signup/signup_page.dart';
 import 'package:provider/provider.dart';
 
 import 'main_model.dart';
@@ -30,12 +32,32 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   RaisedButton(
-                    child: Text('ボタン'),
+                    child: Text('本一覧へ'),
                     onPressed: () {
                       // ここでなにか
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BookListPage()),
+                      );
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text('サインアップ'),
+                    onPressed: () {
+                      // ここでなにか
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      );
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text('ログイン'),
+                    onPressed: () {
+                      // ここでなにか
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                   ),
