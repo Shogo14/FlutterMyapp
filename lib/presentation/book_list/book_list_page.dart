@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/domain/book.dart';
 import 'package:myapp/presentation/add_book/add_book_page.dart';
 import 'package:provider/provider.dart';
 
@@ -17,24 +18,46 @@ class BookListPage extends StatelessWidget {
           builder: (context, model, child) {
             final books = model.books;
             final listTiles = books
-                .map((book) => ListTile(
-                      title: Text(book.title),
-                      trailing: IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddBookPage(
-                                book: book,
-                              ),
-                              fullscreenDialog: true,
+                .map(
+                  (book) => ListTile(
+                    title: Text(book.title),
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddBookPage(
+                              book: book,
                             ),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                        model.fetchBooks();
+                      },
+                    ),
+                    onLongPress: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('${book.title}を削除しますか？'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('OK'),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  // TODO: delete
+                                  await deleteBook(context, model, book);
+                                },
+                              ),
+                            ],
                           );
-                          model.fetchBooks();
                         },
-                      ),
-                    ))
+                      );
+                    },
+                  ),
+                )
                 .toList();
             return ListView(
               children: listTiles,
@@ -59,6 +82,39 @@ class BookListPage extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Future deleteBook(
+      BuildContext context, BookListModel model, Book book) async {
+    try {
+      await model.deleteBook(book);
+
+      // await _showDialog(context, '削除しました');
+      await model.fetchBooks();
+    } catch (e) {
+      // await _showDialog(context, e.toString());
+      print(e.toString());
+    }
+  }
+
+  // ignore: missing_return
+  Future _showDialog(BuildContext context, title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
