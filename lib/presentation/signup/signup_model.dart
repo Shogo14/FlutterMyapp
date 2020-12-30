@@ -26,8 +26,10 @@ class SignUpModel extends ChangeNotifier {
     }
 
     final email = userCredential.user.email;
-    await FirebaseFirestore.instance.collection('users').add(
+    final uid = userCredential.user.uid;
+    await FirebaseFirestore.instance.collection('users').doc(uid).set(
       {
+        'uid': uid,
         'email': email,
         'createdAt': Timestamp.now(),
       },

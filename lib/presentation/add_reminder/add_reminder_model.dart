@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:myapp/domain/book.dart';
+import 'package:myapp/domain/reminder.dart';
 
-class AddBookModel extends ChangeNotifier {
-  String bookTitle = '';
+class AddReminderModel extends ChangeNotifier {
+  String title = '';
   File imageFile;
   bool isLoading = false;
 
@@ -29,28 +29,29 @@ class AddBookModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addBookToFirebase() async {
-    if (bookTitle.isEmpty) throw ('タイトルを入力してください');
+  Future addReminder() async {
+    if (title.isEmpty) throw ('タイトルを入力してください');
     final imageURL = await _uploadImage();
-    await FirebaseFirestore.instance.collection('books').add(
+    await FirebaseFirestore.instance.collection('reminders').add(
       {
-        'title': bookTitle,
+        'title': title,
         'imageURL': imageURL,
         'createdAt': Timestamp.now(),
       },
     );
   }
 
-  Future updateBook(Book book) async {
-    if (bookTitle.isEmpty) throw ('タイトルを入力してください');
+  Future updateReminder(Reminder reminder) async {
+    if (title.isEmpty) throw ('タイトルを入力してください');
 
     final imageURL = await _uploadImage();
-    final document =
-        FirebaseFirestore.instance.collection('books').doc(book.documentID);
+    final document = FirebaseFirestore.instance
+        .collection('reminders')
+        .doc(reminder.documentID);
 
     await document.update(
       {
-        'title': bookTitle,
+        'title': title,
         'imageURL': imageURL,
         'updateAt': Timestamp.now(),
       },
@@ -60,7 +61,7 @@ class AddBookModel extends ChangeNotifier {
   Future<String> _uploadImage() async {
     firebase_storage.TaskSnapshot snapshot = await firebase_storage
         .FirebaseStorage.instance
-        .ref('books/$bookTitle')
+        .ref('reminders/$title')
         .putFile(imageFile);
 
     final String downloadUrl = await snapshot.ref.getDownloadURL();

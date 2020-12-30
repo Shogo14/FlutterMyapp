@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/presentation/book_list/book_list_page.dart';
 import 'package:myapp/presentation/login/login_page.dart';
+import 'package:myapp/presentation/reminder_list/reminder_list_page.dart';
 import 'package:myapp/presentation/signup/signup_page.dart';
 import 'package:provider/provider.dart';
 
@@ -19,25 +19,26 @@ class MyApp extends StatelessWidget {
         create: (_) => MainModel(),
         child: Scaffold(
           appBar: AppBar(
-            title: Text('コリアンダー'),
+            title: Text('リマインダー'),
           ),
           body: Consumer<MainModel>(builder: (context, model, child) {
             return Center(
               child: Column(
                 children: [
                   Text(
-                    model.kboyText,
+                    'リマインダー',
                     style: TextStyle(
                       fontSize: 30,
                     ),
                   ),
                   RaisedButton(
-                    child: Text('本一覧へ'),
+                    child: Text('リマインド一覧へ'),
                     onPressed: () {
                       // ここでなにか
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => BookListPage()),
+                        MaterialPageRoute(
+                            builder: (context) => ReminderListPage()),
                       );
                     },
                   ),

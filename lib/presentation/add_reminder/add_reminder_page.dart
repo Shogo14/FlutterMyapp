@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/domain/book.dart';
+import 'package:myapp/domain/reminder.dart';
 import 'package:provider/provider.dart';
 
-import 'add_book_model.dart';
+import 'add_reminder_model.dart';
 
-class AddBookPage extends StatelessWidget {
-  AddBookPage({this.book});
-  final Book book;
+class AddReminderPage extends StatelessWidget {
+  AddReminderPage({this.reminder});
+  final Reminder reminder;
   @override
   Widget build(BuildContext context) {
-    final bool isUpdate = book != null;
+    final bool isUpdate = reminder != null;
     final textEditingController = TextEditingController();
 
     if (isUpdate) {
-      textEditingController.text = book.title;
+      textEditingController.text = reminder.title;
     }
-    return ChangeNotifierProvider<AddBookModel>(
-      create: (_) => AddBookModel(),
+    return ChangeNotifierProvider<AddReminderModel>(
+      create: (_) => AddReminderModel(),
       child: Stack(
         children: [
           Scaffold(
             appBar: AppBar(
-              title: Text(isUpdate ? '本を編集' : '本を追加'),
+              title: Text(isUpdate ? 'リマインダーを編集' : 'リマインダーを追加'),
             ),
-            body: Consumer<AddBookModel>(
+            body: Consumer<AddReminderModel>(
               builder: (context, model, child) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -46,7 +46,7 @@ class AddBookPage extends StatelessWidget {
                       TextField(
                         controller: textEditingController,
                         onChanged: (text) {
-                          model.bookTitle = text;
+                          model.title = text;
                         },
                       ),
                       RaisedButton(
@@ -54,9 +54,9 @@ class AddBookPage extends StatelessWidget {
                         onPressed: () async {
                           model.startLoading();
                           if (isUpdate) {
-                            await updateBook(model, context);
+                            await updateReminder(model, context);
                           } else {
-                            await addBook(model, context);
+                            await addReminder(model, context);
                           }
                           model.endLoading();
                         },
@@ -67,7 +67,7 @@ class AddBookPage extends StatelessWidget {
               },
             ),
           ),
-          Consumer<AddBookModel>(builder: (context, model, child) {
+          Consumer<AddReminderModel>(builder: (context, model, child) {
             return model.isLoading
                 ? Container(
                     color: Colors.grey.withOpacity(0.7),
@@ -82,9 +82,9 @@ class AddBookPage extends StatelessWidget {
     );
   }
 
-  Future addBook(AddBookModel model, BuildContext context) async {
+  Future addReminder(AddReminderModel model, BuildContext context) async {
     try {
-      await model.addBookToFirebase();
+      await model.addReminder();
 
       await showDialog(
         context: context,
@@ -123,9 +123,9 @@ class AddBookPage extends StatelessWidget {
     }
   }
 
-  Future updateBook(AddBookModel model, BuildContext context) async {
+  Future updateReminder(AddReminderModel model, BuildContext context) async {
     try {
-      await model.updateBook(book);
+      await model.updateReminder(reminder);
 
       await showDialog(
         context: context,

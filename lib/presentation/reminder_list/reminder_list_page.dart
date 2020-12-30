@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/domain/book.dart';
-import 'package:myapp/presentation/add_book/add_book_page.dart';
+import 'package:myapp/domain/reminder.dart';
+import 'package:myapp/presentation/add_reminder/add_reminder_page.dart';
 import 'package:provider/provider.dart';
 
-import 'book_list_model.dart';
+import 'reminder_list_model.dart';
 
-class BookListPage extends StatelessWidget {
+class ReminderListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BookListModel>(
-      create: (_) => BookListModel()..fetchBooks(),
+    return ChangeNotifierProvider<ReminderListModel>(
+      create: (_) => ReminderListModel()..fetchReminders(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('本一覧'),
+          title: Text('リマインダー一覧'),
         ),
-        body: Consumer<BookListModel>(
+        body: Consumer<ReminderListModel>(
           builder: (context, model, child) {
-            final books = model.books;
-            final listTiles = books
+            final reminders = model.reminders;
+            final listTiles = reminders
                 .map(
-                  (book) => ListTile(
-                    leading: Image.network(book.imageURL),
-                    title: Text(book.title),
+                  (reminder) => ListTile(
+                    leading: Image.network(reminder.imageURL),
+                    title: Text(reminder.title),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () async {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddBookPage(
-                              book: book,
+                            builder: (context) => AddReminderPage(
+                              reminder: reminder,
                             ),
                             fullscreenDialog: true,
                           ),
                         );
-                        model.fetchBooks();
+                        model.fetchReminders();
                       },
                     ),
                     onLongPress: () async {
@@ -42,14 +42,15 @@ class BookListPage extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('${book.title}を削除しますか？'),
+                            title: Text('${reminder.title}を削除しますか？'),
                             actions: <Widget>[
                               TextButton(
                                 child: Text('OK'),
                                 onPressed: () async {
                                   Navigator.of(context).pop();
                                   // TODO: delete
-                                  await deleteBook(context, model, book);
+                                  await deleteReminder(
+                                      context, model, reminder);
                                 },
                               ),
                             ],
@@ -65,7 +66,7 @@ class BookListPage extends StatelessWidget {
             );
           },
         ),
-        floatingActionButton: Consumer<BookListModel>(
+        floatingActionButton: Consumer<ReminderListModel>(
           builder: (context, model, child) {
             return FloatingActionButton(
               child: Icon(Icons.add),
@@ -73,11 +74,11 @@ class BookListPage extends StatelessWidget {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddBookPage(),
+                    builder: (context) => AddReminderPage(),
                     fullscreenDialog: true,
                   ),
                 );
-                model.fetchBooks();
+                model.fetchReminders();
               },
             );
           },
@@ -86,13 +87,13 @@ class BookListPage extends StatelessWidget {
     );
   }
 
-  Future deleteBook(
-      BuildContext context, BookListModel model, Book book) async {
+  Future deleteReminder(
+      BuildContext context, ReminderListModel model, Reminder reminder) async {
     try {
-      await model.deleteBook(book);
+      await model.deleteReminder(reminder);
 
       // await _showDialog(context, '削除しました');
-      await model.fetchBooks();
+      await model.fetchReminders();
     } catch (e) {
       // await _showDialog(context, e.toString());
       print(e.toString());
