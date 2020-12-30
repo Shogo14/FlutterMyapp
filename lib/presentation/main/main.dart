@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
                     },
                   ),
                   RaisedButton(
-                    child: Text('サインアップ'),
+                    child: Text('新規登録'),
                     onPressed: () {
                       // ここでなにか
                       Navigator.push(
