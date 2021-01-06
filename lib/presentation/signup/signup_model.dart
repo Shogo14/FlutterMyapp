@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class SignUpModel extends ChangeNotifier {
   String mail = '';
   String password = '';
+  User _user;
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Future signUp() async {
@@ -34,5 +35,13 @@ class SignUpModel extends ChangeNotifier {
         'createdAt': Timestamp.now(),
       },
     );
+  }
+
+  Future currentUser() async {
+    final _currentUser = _firebaseAuth.currentUser;
+    if (_currentUser != null) {
+      _user = _currentUser;
+      notifyListeners();
+    }
   }
 }

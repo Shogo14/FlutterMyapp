@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,8 +33,10 @@ class AddReminderModel extends ChangeNotifier {
   Future addReminder() async {
     if (title.isEmpty) throw ('タイトルを入力してください');
     final imageURL = await _uploadImage();
+    final currentUserUid = FirebaseAuth.instance.currentUser.uid;
     await FirebaseFirestore.instance.collection('reminders').add(
       {
+        'uid': currentUserUid,
         'title': title,
         'imageURL': imageURL,
         'createdAt': Timestamp.now(),
